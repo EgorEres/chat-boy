@@ -1,0 +1,19 @@
+{
+  "name": "chat-boy",
+  "version": "1.0.0",
+  "description": "chat-boy for MegaHack",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/EgorEres/chat-boy.git"
+  },
+  "author": "Pywka Gonka",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/EgorEres/chat-boy/issues"
+  },
+  "homepage": "https://github.com/EgorEres/chat-boy#readme"
+}
