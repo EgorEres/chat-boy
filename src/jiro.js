@@ -1,82 +1,124 @@
 const request = require('./superagent.js')
 
-function narostiJira () {
-
-  const path = function (path, object) {
-    let value = object
-    let idx = 0
-    while (idx < path.length) {
-      if (value === undefined) {
-        return
-      }
-      value = value[path[idx]]
-      idx++
+const path = function (path, object) {
+  let value = object
+  let idx = 0
+  while (idx < path.length) {
+    if (value === undefined) {
+      return
     }
-    return value
+    value = value[path[idx]]
+    idx++
+  }
+  return value
+}
+
+const auth = {
+  login: 'suce',
+  pass: '123698741',
+  domain: 'isityours.atlassian.net'
+}
+
+function narostiJira (dependencies) {
+
+  async function  getSettings (domain) {
+    const response = await request({
+      method: 'get',
+      url: `https://${auth.login}:${auth.pass}@${domain}/rest/api/latest/issue/createmeta`
+    })
+
+    const text = path (['body'], response)
+    console.log('response', text)
+
+    return text
   }
 
-  const auth = {
-    login: 'suce',
-    pass: '123698741',
-    domain: 'isityours.atlassian.net'
-  }
-
-  async function createInstruction () {
-
-    const body = {
+  async function createInstruction ({ projectKey, issueType, name }) {
+    // Есть ещё доп поля
+    let body = {
       fields: {
-         project: { key: "TEST" },
-         summary: "REST ye merry gentlemen.",
-         description: "Creating of an issue using project keys and issue type names using the REST API",
-         issuetype: {
-            name: "Bug"
-         }
+        summary: name,
+        project: { key: projectKey },
+        issuetype: { name: issueType }
       }
     }
 
     const response = await request({
       method: 'post',
-      url: `https://${auth.login}:${auth.pass}@${auth.domain}/rest/api/latest/issue`,
+      url: `https://${auth.login}:${auth.pass}@${auth.domain}/rest/api/latest/issue/`,
       body
     })
 
+    console.log('response', response)
   }
 
-  async function getInstruction (issueNumber) {
+  async function readInstruction (issueNumber) {
   const response = await request({
-    method: 'GET',
-    uri: `https://${auth.login}:${auth.pass}@${auth.domain}/rest/api/latest/issue/${issueNumber}`,
-    resolveWithFullResponse: true
+    method: 'get',
+    url: `https://${auth.login}:${auth.pass}@${auth.domain}/rest/api/latest/issue/${issueNumber}`
   })
 
+  const body = path(['body', 'fields', 'issuetype'], response)
+
   // console.log('response', response)
-  const body = JSON.parse(response.body)
   console.log('body', body)
 
   return body
   }
 
-  function getAllInstructions () {
+  async function searchInstructions (query) {
+    const response = await request({
+      method: 'get',
+      url: `https://${auth.login}:${auth.pass}@${auth.domain}/rest/api/latest/search`,
+      query
+    })
+
+    const text = path (['body'], response)
+    console.log('response', text)
+
+    return text
   }
 
-  function searchInstructions () {
+  async function updateInstruction ({ issueNumber, query }) {
+    const body = {
+      fields: query
+    }
 
+    const response = await request({
+      method: 'put',
+      url: `https://${auth.login}:${auth.pass}@${auth.domain}/rest/api/latest/issue/${issueNumber}`,
+      body
+    })
   }
 
-  function updateInstruction () {
-  }
-
-  function deleteInstruction () {
+  async function deleteInstruction(issueNumber) {
+    await request({
+      method: 'delete',
+      url: `https://${auth.login}:${auth.pass}@${auth.domain}/rest/api/latest/issue/${issueNumber}`
+    })
   }
 
   return {
     createInstruction,
-    getInstruction
+    readInstruction,
+    updateInstruction,
+    deleteInstruction,
+    searchInstructions,
+    getSettings
   }
 }
 
 module.exports = narostiJira
 
 const a = narostiJira()
-a.createInstruction()
-// a.getInstruction('JYSM-1')
+// a.createInstruction({ projectKey: 'JYSM', issueType: 'Story', name: 'this is a new name!!' })
+// a.readInstruction('JYSM-1')
+// a.updateInstruction({
+//   issueNumber: 'JYSM-2',
+//   query: {
+//     assignee: { name: 'suce' }
+//   }
+// })
+// a.deleteInstruction('JYSM-3')
+// a.searchInstructions({ assignee: 'suce' })
+a.getSettings(auth.domain)
