@@ -4,6 +4,7 @@
   "description": "chat-boy for MegaHack",
   "main": "index.js",
   "scripts": {
+    "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -18,6 +19,7 @@
   "homepage": "https://github.com/EgorEres/chat-boy#readme",
   "devDependencies": {
     "body-parser": "^1.18.3",
-    "express": "^4.16.4"
+    "express": "^4.16.4",
+    "superagent": "^4.0.0-beta.5"
   }
 }
