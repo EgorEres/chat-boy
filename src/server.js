@@ -3,6 +3,8 @@ const bodyParser = require('body-parser')
 const TamTamClient = require('./tamtam.js')
 const superagent = require('./superagent')
 const checkHook = require('./checkHook')
+const mongo = require('./mongo')
+const jira = require('./jira')
 const app = express()
 const token = 'gGjPsXrHzrM2abI2_1720QVymQNKFokyGINFCf7zbW4'
 
@@ -26,20 +28,38 @@ async function init (deps) {
 
   app.post('/', async (req, res) => {
     console.log('it is post res', req.body)
-    const { message: {text}, recipient: {chat_id} } = req.body
+    const { message: {text}, recipient: {chat_id}, sender } = req.body
+
+    try {
+      const checTy = JSON.parse(text)
+      if (checTy && (checTy.ty === 'CHAT_CREATED' || checTy.ty === 'USERS_ADDED')) {
+        const resText = `Привет ${sender.name}, я Антонио. Скажи у тебя есть домен в JIRA?`
+        await tamtam.sendMessage({ chatId: chat_id, text: resText })
+        console.log('sssss')
+      }
+      res.status(200).send({message: 'OK'})
+      return
+    } catch (err) {
+      console.log('Failed parse')
+    }
+
+
     if (text && text[0] === '>') {
       const resText = `Я создал задачу: ${text} в JIRA`
       console.log('chat id', chat_id)
       await tamtam.sendMessage({ chatId: chat_id, text: resText })
       // console.log('response send mes ====================>', response.status)
+      res.status(200).send({message: 'OK'})
+      return
     }
     if (text && text[0] === '~') {
       const resText = `Я создал идею: ${text} в JIRA`
       console.log('chat id', chat_id)
       await tamtam.sendMessage({ chatId: chat_id, text: resText })
       // console.log('response send mes ====================>', response.status)
+      res.status(200).send({message: 'OK'})
+      return
     }
-    res.status(200).send({message: 'OK'})
   })
 
   app.listen(3000, () => console.log('Example app listening on port 3000!'))

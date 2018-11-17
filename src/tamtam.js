@@ -2,7 +2,7 @@ const request = require('superagent')
 
 function isValidString (str) {
     if (!str || typeof str !== 'string' || str.length === "" ) {
-        return false 
+        return false
     }
     return true
 }
@@ -43,13 +43,13 @@ class TamTamClient  {
             .get(`${this.url}/me/chats`)
             .query({count, access_token: this.token})
             .then(resp => resp.body.chats)
-            
+
     }
     getMessages ({ chatId }) {
         // if (!isValidInt(chatId)) {
         //     throw new Error('NO chat id')
         // }
-        
+
         return request
             .get(`${this.url}/me/messages`)
             .query({chat_id: chatId, access_token: this.token})
@@ -61,7 +61,7 @@ class TamTamClient  {
 
 module.exports = TamTamClient
 
-// 
+//
 //  ПРИМЕР ИСПОЛЬЗОВАНИЯ
 //
 // async function main () {
@@ -70,7 +70,7 @@ module.exports = TamTamClient
 //     try {
 //         const messages = await tamtam.getMessages({ chatId: 68181946763 })
 //         const chats = await tamtam.getChats()
-//         await tamtam.sendMessage({ chatId: 68181946763, text: 'HELLO'}) 
+//         await tamtam.sendMessage({ chatId: 68181946763, text: 'HELLO'})
 //
 //     } catch (err) {
 //         console.log('err', err)

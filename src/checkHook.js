@@ -1,6 +1,6 @@
 const superagent = require('./superagent')
 
-const url = 'https://01fb92a8.ngrok.io/'
+const url = 'https://509b3313.ngrok.io/'
 
 async function init (token) {
   const tokenQuery = {

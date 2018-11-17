@@ -109,16 +109,3 @@ function narostiJira (dependencies) {
 }
 
 module.exports = narostiJira
-
-const a = narostiJira()
-// a.createInstruction({ projectKey: 'JYSM', issueType: 'Story', name: 'this is a new name!!' })
-// a.readInstruction('JYSM-1')
-// a.updateInstruction({
-//   issueNumber: 'JYSM-2',
-//   query: {
-//     assignee: { name: 'suce' }
-//   }
-// })
-// a.deleteInstruction('JYSM-3')
-// a.searchInstructions({ assignee: 'suce' })
-a.getSettings(auth.domain)
